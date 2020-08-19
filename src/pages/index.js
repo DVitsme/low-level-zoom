@@ -28,7 +28,12 @@ const Video = ({ token }) => {
             if (publication.isSubscribed) {
               const track = publication.tract
               remoteVidRef.current.appendChild(track.attach())
+              console.log("attached to remote video")
             }
+          })
+          participant.on("trackSubscribed", track => {
+            console.log("track subscribed")
+            remoteVidRef.current.appendChild(track.attach())
           })
         }
 

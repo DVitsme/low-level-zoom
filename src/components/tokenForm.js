@@ -6,8 +6,8 @@ const TokenForm = ({ storeToken }) => {
   const [name, setName] = useState("")
   const [room, setRoom] = useState("")
 
-  const handleSubmit = async e => {
-    e.preventDefault()
+  const handleSubmit = async event => {
+    event.preventDefault()
     try {
       const result = await axios({
         method: "POST",
