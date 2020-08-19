@@ -54,7 +54,7 @@ const IndexPage = () => {
       {!token ? <TokenForm storeToken={setToken} /> : <Video token={token} />}
 
       <ul>
-        <ol>Show Local Video</ol>
+        <ol>Show Local Videos</ol>
         <ol>Connect To A Room</ol>
         <ol>Show participants video (remote)</ol>
         <ol>Handle Events</ol>
