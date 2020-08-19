@@ -1,22 +1,60 @@
-import React from "react"
-import { Link } from "gatsby"
+import React, { useState, useRef, useEffect } from "react"
+import TwilioVideo from "twilio-video"
 
 import Layout from "../components/layout"
-import Image from "../components/image"
+import TokenForm from "../components/tokenForm"
+// import Image from "../components/image"
 import SEO from "../components/seo"
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
+const Video = ({ token }) => {
+  const localVidRef = useRef(null)
+  const remoteVidRef = useRef(null)
+
+  useEffect(() => {
+    TwilioVideo.connect(token, {
+      video: true,
+      audio: true,
+      name: "VideoTest",
+    })
+      .then(room => {
+        TwilioVideo.createLocalVideoTrack().then(track => {
+          localVidRef.current.appendChild(track.attach())
+        })
+        room.participants.forEach(participant => {
+          participant.tracks.forEach(publication => {
+            if (publication.isSubscribed) {
+              const track = publication.tract
+              remoteVidRef.current.appendChild(track.attach())
+            }
+          })
+        })
+      })
+      .catch(error => console.log(error))
+  }, [token])
+
+  return (
+    <div>
+      <div ref={localVidRef}></div>
+      <div ref={remoteVidRef}></div>
     </div>
-    <Link to="/page-2/">Go to page 2</Link> <br />
-    <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
-  </Layout>
-)
+  )
+}
+
+const IndexPage = () => {
+  const [token, setToken] = useState(false)
+  return (
+    <Layout>
+      <SEO title="Home" />
+      {!token ? <TokenForm storeToken={setToken} /> : <Video token={token} />}
+
+      <ul>
+        <ol>Show Local Video</ol>
+        <ol>Connect To A Room</ol>
+        <ol>Show participants video (remote)</ol>
+        <ol>Handle Events</ol>
+      </ul>
+    </Layout>
+  )
+}
 
 export default IndexPage
