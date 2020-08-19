@@ -20,14 +20,20 @@ const Video = ({ token }) => {
         TwilioVideo.createLocalVideoTrack().then(track => {
           localVidRef.current.appendChild(track.attach())
         })
-        room.participants.forEach(participant => {
+        const addParticipant = participant => {
+          console.log("new participant")
+          console.log(participant.identity)
+          // room.participants.forEach(participant => {
           participant.tracks.forEach(publication => {
             if (publication.isSubscribed) {
               const track = publication.tract
               remoteVidRef.current.appendChild(track.attach())
             }
           })
-        })
+        }
+
+        room.participants.forEach(addParticipant)
+        room.on("participantConnected", addParticipant)
       })
       .catch(error => console.log(error))
   }, [token])
